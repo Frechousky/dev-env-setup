@@ -77,7 +77,7 @@ install_vscode() {
 	echo "Installing vscode"
 	echo -e \
 		"[vscode]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" \
-		> sudo /etc/yum.repos.d/vscode.repo || (echo "error creating vscode repo file"; exit 1;)
+		| sudo tee /etc/yum.repos.d/vscode.repo || (echo "error creating vscode repo file"; exit 1;)
 	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc || (echo "rpm import failed"; exit 1;) 
 	if sudo dnf -y install code; then
 		echo "Vscode has been successfully installed"
