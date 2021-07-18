@@ -12,12 +12,16 @@ create_user() {
 	if [[ "$createUserYN" =~ ^([yY][eE][sS]|[yY])$ ]]; then
 		echo "Creating unix user"
 		read -p "Enter username: " username
-		read -s -p "Enter password: " password
-		echo ""
-		if sudo useradd -m -p "$password" "$username"; then
+		if sudo useradd -m "$username"; then
 			echo "User $username created" 
 		else
 			echo "Error creating user $username"
+			exit 1
+		fi
+		if sudo passwd "$username"; then
+			echo "User $username password has been updated"
+		else
+			echo "Error updating user $username password"
 			exit 1
 		fi
 		if sudo usermod -aG wheel "$username"; then
