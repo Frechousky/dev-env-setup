@@ -52,7 +52,7 @@ install_docker() {
 		echo "Error installing dnf-plugins-core"
 		exit 1
 	fi
-	if sudo dnf config-manager --add-repo  https://download.docker.com/linux/fedora/docker-ce.repo; then
+	if sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo; then
 		echo "Docker repo added to dnf repos"
 	else
 		echo "Error adding docker repo to dnf repos"
