@@ -36,8 +36,9 @@ create_user() {
 display_help() {
 	echo "Download, install and configure softwares for software engineering."
 	echo "It is advised not to run this script with sudo."
-	echo "Usage: ./set_dev_env.sh [all|docker|git|user|vscode]"
+	echo "Usage: ./set_dev_env.sh [all|compose|docker|git|user|vscode]"
 	echo -e "\tall\tfull installation"
+	echo -e "\tcompose\tdownload and install docker-compose"
 	echo -e "\tdocker\tdownload, install and configure docker (add user to docker group)"
 	echo -e "\tgit\tconfigure git"
 	echo -e "\tuser\tcreate unix user"
@@ -73,6 +74,21 @@ install_docker() {
 	fi
 }
 
+install_docker_compose() {
+	echo "Installing docker-compose"
+	# https://github.com/docker/compose/releases/latest redirects to latest tag
+	dockerComposeLatestTag=$(curl -Ls -I -o /dev/null -w %{url_effective} https://github.com/docker/compose/releases/latest)
+	dockerComposeLatestTagDownloadUrl=${dockerComposeLatestTag/tag/download}
+	sudo curl -L "$dockerComposeLatestTagDownloadUrl/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+	sudo chmod 755 /usr/local/bin/docker-compose
+	if /usr/local/bin/docker-compose --version; then
+		echo "Docker-compose has been successfully installed"
+	else
+		echo "Error installing docker-compose"
+		exit 1
+	fi
+}
+
 install_vscode() {
 	echo "Installing vscode"
 	echo -e \
@@ -92,6 +108,9 @@ case $1 in
 	user) 
 		create_user;;
 
+	compose)
+		install_docker_compose;;
+
 	docker)
 		install_docker;;
 
@@ -104,6 +123,7 @@ case $1 in
 	all)
 		create_user
 		install_docker
+		install_docker_compose
 		install_vscode
 		configurate_git;;
 	*)
