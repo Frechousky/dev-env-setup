@@ -72,6 +72,8 @@ install_docker() {
 		echo "Error adding user $username to group docker"
 		exit 1
 	fi
+	sudo systemctl enable docker.service
+ 	sudo systemctl enable containerd.service
 }
 
 install_docker_compose() {
