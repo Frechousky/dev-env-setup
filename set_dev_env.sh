@@ -4,10 +4,10 @@ configurate_git() {
 	echo "Configurate git"
 	git config --global --add user.name frechousky
 	git config --global --add user.email alexandre.freche@gmail.com
-	echo "Git has been successfully configured"
+	echo "git has been successfully configured"
 }
 
-create_user() {
+create_unix_user() {
 	read -p "Would you like to create a unix user [y|N] ? " createUserYN
 	if [[ "$createUserYN" =~ ^([yY][eE][sS]|[yY])$ ]]; then
 		echo "Creating unix user"
@@ -48,20 +48,21 @@ display_help() {
 
 install_docker() {
 	echo "Installing docker"
+	echo "dnf-plugins-core is required to install docker"
 	if sudo dnf -y install dnf-plugins-core; then
-		echo "Dnf-plugins-core installed"
+		echo "dnf-plugins-core has been successfully installed"
 	else
 		echo "Error installing dnf-plugins-core"
 		exit 1
 	fi
 	if sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo; then
-		echo "Docker repo added to dnf repos"
+		echo "docker repo added to dnf repos"
 	else
 		echo "Error adding docker repo to dnf repos"
 		exit 1
 	fi
 	if sudo dnf -y install docker-ce docker-ce-cli containerd.io; then
-		echo "Docker has been successfully installed"
+		echo "docker has been successfully installed"
 	else
 		echo "Error installing docker"
 		exit 1
@@ -85,7 +86,7 @@ install_docker_compose() {
 	sudo curl -L "$dockerComposeLatestTagDownloadUrl/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 	sudo chmod 755 /usr/local/bin/docker-compose
 	if /usr/local/bin/docker-compose --version; then
-		echo "Docker-compose has been successfully installed"
+		echo "docker-compose has been successfully installed"
 	else
 		echo "Error installing docker-compose"
 		exit 1
@@ -130,8 +131,13 @@ install_maven() {
 
 username=$USER
 case $1 in
-	user) 
-		create_user;;
+	all)
+		create_unix_user
+		install_docker
+		install_docker_compose
+		install_intellij
+		install_maven
+		configurate_git;;
 
 	compose)
 		install_docker_compose;;
@@ -148,13 +154,9 @@ case $1 in
   	maven)
 		install_maven;;
 
-	all)
-		create_user
-		install_docker
-		install_docker_compose
-		install_intellij
-		install_maven
-		configurate_git;;
+	user) 
+		create_unix_user;;
+
 	*)
 		display_help;;
 esac
