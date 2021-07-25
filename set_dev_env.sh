@@ -36,13 +36,14 @@ create_user() {
 display_help() {
 	echo "Download, install and configure softwares for software engineering."
 	echo "It is advised not to run this script with sudo."
-	echo "Usage: ./set_dev_env.sh [all|compose|docker|git|user|vscode]"
-	echo -e "\tall\tfull installation"
-	echo -e "\tcompose\tdownload and install docker-compose"
-	echo -e "\tdocker\tdownload, install and configure docker (add user to docker group)"
-	echo -e "\tgit\tconfigure git"
-	echo -e "\tuser\tcreate unix user"
-	echo -e "\tvscode\tdownload and install vscode"
+	echo "Usage: ./set_dev_env.sh [all|compose|docker|git|intellij|user]"
+	echo -e "\tall\t\tfull installation"
+	echo -e "\tcompose\t\tdownload and install docker-compose"
+	echo -e "\tdocker\t\tdownload, install and configure docker (add user to docker group)"
+	echo -e "\tgit\t\tconfigure git"
+	echo -e "\tintellij\tdownload and install intellij idea community"
+	echo -e "\maven\tdownload and install maven"
+	echo -e "\tuser\t\tcreate unix user"
 }
 
 install_docker() {
@@ -91,16 +92,38 @@ install_docker_compose() {
 	fi
 }
 
-install_vscode() {
-	echo "Installing vscode"
-	echo -e \
-		"[vscode]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" \
-		| sudo tee /etc/yum.repos.d/vscode.repo || (echo "error creating vscode repo file"; exit 1;)
-	sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc || (echo "rpm import failed"; exit 1;) 
-	if sudo dnf -y install code; then
-		echo "Vscode has been successfully installed"
+install_intellij() {
+	# https://www.jetbrains.com/help/idea/installation-guide.html#snap
+	echo "Installing intellij idea community"
+	echo "snapd is required to install intellij idea community"
+	# snapd install
+	# https://snapcraft.io/docs/installing-snap-on-fedora
+	if sudo dnf -y install snapd; then
+		echo "snapd has been successfully installed"
 	else
-		echo "Error installing vscode"
+		echo "Error installing snapd"
+		exit 1
+	fi
+	if sudo ln -s /var/lib/snapd/snap /snap; then
+		echo "Created symlink from /var/lib/snapd/snap to /snap"
+	else
+		echo "Error creating symlink from /var/lib/snapd/snap to /snapln "
+	fi
+	# end snap install
+	if sudo snap install intellij-idea-community --classic; then
+		echo "intellij idea community has been successfully installed"
+	else
+		echo "Error installing intellij idea community"
+		exit 1
+	fi
+}
+
+install_maven() {
+  echo "Installing maven"
+  if sudo dnf -y install maven; then
+		echo "maven has been successfully installed"
+	else
+		echo "Error installing maven"
 		exit 1
 	fi
 }
@@ -116,17 +139,21 @@ case $1 in
 	docker)
 		install_docker;;
 
-	vscode)
-		install_vscode;;
-
 	git)
 		configurate_git;;
+	
+	intellij)
+		install_intellij;;
+
+  	maven)
+		install_maven;;
 
 	all)
 		create_user
 		install_docker
 		install_docker_compose
-		install_vscode
+		install_intellij
+		install_maven
 		configurate_git;;
 	*)
 		display_help;;
