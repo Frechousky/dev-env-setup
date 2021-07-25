@@ -42,7 +42,7 @@ display_help() {
 	echo -e "\tdocker\t\tdownload, install and configure docker (add user to docker group)"
 	echo -e "\tgit\t\tconfigure git"
 	echo -e "\tintellij\tdownload and install intellij idea community"
-	echo -e "\maven\tdownload and install maven"
+	echo -e "\tmaven\t\tdownload and install maven"
 	echo -e "\tuser\t\tcreate unix user"
 }
 
