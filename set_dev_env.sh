@@ -36,13 +36,14 @@ create_unix_user() {
 display_help() {
 	echo "Download, install and configure softwares for software engineering."
 	echo "It is advised not to run this script with sudo."
-	echo "Usage: ./set_dev_env.sh [all|compose|docker|git|intellij|user]"
+	echo "Usage: ./set_dev_env.sh [all|compose|docker|git|intellij|maven|npm|user]"
 	echo -e "\tall\t\tfull installation"
 	echo -e "\tcompose\t\tdownload and install docker-compose"
 	echo -e "\tdocker\t\tdownload, install and configure docker (add user to docker group)"
 	echo -e "\tgit\t\tconfigure git"
 	echo -e "\tintellij\tdownload and install intellij idea community"
 	echo -e "\tmaven\t\tdownload and install maven"
+	echo -e "\tnpm\t\tdownload and install npm"
 	echo -e "\tuser\t\tcreate unix user"
 }
 
@@ -119,6 +120,16 @@ install_intellij() {
 	fi
 }
 
+install_npm() {
+	echo "Installing npm"
+  	if sudo dnf -y install npm; then
+		echo "npm has been successfully installed"
+	else
+		echo "Error installing npm"
+		exit 1
+	fi
+}
+
 install_maven() {
   echo "Installing maven"
   if sudo dnf -y install maven; then
@@ -137,6 +148,7 @@ case $1 in
 		install_docker_compose
 		install_intellij
 		install_maven
+		install_npm
 		configurate_git;;
 
 	compose)
@@ -153,6 +165,9 @@ case $1 in
 
   	maven)
 		install_maven;;
+	
+	maven)
+		install_npm;;
 
 	user) 
 		create_unix_user;;
