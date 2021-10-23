@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+check_snapd_install() {
+	if which snap > /dev/null 2>&1; then
+		echo "snapd already installed"
+	else
+		install_snapd
+	fi
+}
+
 configurate_git() {
 	echo "Configurate git"
 	git config --global --add user.name frechousky
@@ -40,11 +48,24 @@ display_help() {
 	echo -e "\tall\t\tfull installation"
 	echo -e "\tcompose\t\tdownload and install docker-compose"
 	echo -e "\tdocker\t\tdownload, install and configure docker (add user to docker group)"
+	echo -e "\tdbeaver\t\tdownload and install dbeaver"
 	echo -e "\tgit\t\tconfigure git"
 	echo -e "\tintellij\tdownload and install intellij idea community"
 	echo -e "\tmaven\t\tdownload and install maven"
 	echo -e "\tnpm\t\tdownload and install npm"
+	echo -e "\tsnapd\t\tdownload and install snapd"
 	echo -e "\tuser\t\tcreate unix user"
+}
+
+install_dbeaver() {
+	echo "Installing dbeaver"
+	check_snapd_install
+	if sudo snap install dbeaver-ce; then
+		echo "dbeaver has been successfully installed"
+	else
+		echo "Error installing dbeaver"
+		exit 1
+	fi
 }
 
 install_docker() {
@@ -97,35 +118,11 @@ install_docker_compose() {
 install_intellij() {
 	# https://www.jetbrains.com/help/idea/installation-guide.html#snap
 	echo "Installing intellij idea community"
-	echo "snapd is required to install intellij idea community"
-	# snapd install
-	# https://snapcraft.io/docs/installing-snap-on-fedora
-	if sudo dnf -y install snapd; then
-		echo "snapd has been successfully installed"
-	else
-		echo "Error installing snapd"
-		exit 1
-	fi
-	if sudo ln -s /var/lib/snapd/snap /snap; then
-		echo "Created symlink from /var/lib/snapd/snap to /snap"
-	else
-		echo "Error creating symlink from /var/lib/snapd/snap to /snapln "
-	fi
-	# end snap install
+	check_snapd_install
 	if sudo snap install intellij-idea-community --classic; then
 		echo "intellij idea community has been successfully installed"
 	else
 		echo "Error installing intellij idea community"
-		exit 1
-	fi
-}
-
-install_npm() {
-	echo "Installing npm"
-  	if sudo dnf -y install npm; then
-		echo "npm has been successfully installed"
-	else
-		echo "Error installing npm"
 		exit 1
 	fi
 }
@@ -140,10 +137,38 @@ install_maven() {
 	fi
 }
 
+install_npm() {
+	echo "Installing npm"
+  	if sudo dnf -y install npm; then
+		echo "npm has been successfully installed"
+	else
+		echo "Error installing npm"
+		exit 1
+	fi
+}
+
+install_snapd() {
+	# https://snapcraft.io/docs/installing-snap-on-fedora
+	echo "Installing snapd"
+	if sudo dnf -y install snapd; then
+		echo "snapd has been successfully installed"
+	else
+		echo "Error installing snapd"
+		exit 1
+	fi
+	if sudo ln -s /var/lib/snapd/snap /snap; then
+		echo "Created symlink from /var/lib/snapd/snap to /snap"
+	else
+		echo "Error creating symlink from /var/lib/snapd/snap to /snapln "
+	fi
+}
+
 username=$USER
 case $1 in
 	all)
 		create_unix_user
+		install_snapd
+		install_dbeaver
 		install_docker
 		install_docker_compose
 		install_intellij
@@ -157,6 +182,9 @@ case $1 in
 	docker)
 		install_docker;;
 
+	dbeaver)
+		install_dbeaver;;
+
 	git)
 		configurate_git;;
 	
@@ -168,6 +196,9 @@ case $1 in
 	
 	maven)
 		install_npm;;
+
+	snapd)
+		install_snapd;;
 
 	user) 
 		create_unix_user;;
