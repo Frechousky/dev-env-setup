@@ -44,11 +44,12 @@ create_unix_user() {
 display_help() {
 	echo "Install and configure softwares for software engineering."
 	echo "It is advised not to run this script with sudo."
-	echo "Usage: $0 [all|compose|docker|git|snapd|vscode|user]"
+	echo "Usage: $0 [all|compose|docker|git|postman|snapd|vscode|user]"
 	echo -e "\tall\t\tfull installation"
 	echo -e "\tcompose\t\tinstall docker-compose"
 	echo -e "\tdocker\t\tinstall and configure docker (add user to docker group)"
 	echo -e "\tgit\t\tconfigure git"
+	echo -e "\tpostman\t\tinstall postman"
 	echo -e "\tsnapd\t\tinstall snapd"
 	echo -e "\tvscode\t\tinstall vscode"
 	echo -e "\tuser\t\tcreate unix user"
@@ -101,6 +102,17 @@ install_docker_compose() {
 	fi
 }
 
+install_postman() {
+	# https://code.visualstudio.com/docs/setup/linux#_snap
+	check_snapd_install
+	if sudo snap install postman; then
+		echo "postman has been successfully installed"
+	else
+		echo "Error installing postman"
+		exit 1
+	fi
+}
+
 install_snapd() {
 	# https://snapcraft.io/docs/installing-snap-on-fedora
 	echo "Installing snapd"
@@ -135,6 +147,7 @@ case $1 in
 		install_snapd
 		install_docker
 		install_docker_compose
+		install_postman
 		install_vscode
 		configurate_git;;
 
@@ -146,6 +159,9 @@ case $1 in
 
 	git)
 		configurate_git;;
+
+	postman)
+		install_postman;;
 
 	snapd)
 		install_snapd;;
