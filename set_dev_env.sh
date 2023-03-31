@@ -44,12 +44,13 @@ create_unix_user() {
 display_help() {
 	echo "Install and configure softwares for software engineering."
 	echo "It is advised not to run this script with sudo."
-	echo "Usage: $0 [all|compose|docker|git|snapd|user]"
+	echo "Usage: $0 [all|compose|docker|git|snapd|vscode|user]"
 	echo -e "\tall\t\tfull installation"
 	echo -e "\tcompose\t\tinstall docker-compose"
 	echo -e "\tdocker\t\tinstall and configure docker (add user to docker group)"
 	echo -e "\tgit\t\tconfigure git"
-	echo -e "\snapd\t\tinstall snapd"
+	echo -e "\tsnapd\t\tinstall snapd"
+	echo -e "\tvscode\t\tinstall vscode"
 	echo -e "\tuser\t\tcreate unix user"
 }
 
@@ -116,6 +117,17 @@ install_snapd() {
 	fi
 }
 
+install_vscode() {
+	# https://code.visualstudio.com/docs/setup/linux#_snap
+	check_snapd_install
+	if sudo snap install --classic code; then
+		echo "vscode has been successfully installed"
+	else
+		echo "Error installing vscode"
+		exit 1
+	fi
+}
+
 username=$USER
 case $1 in
 	all)
@@ -123,6 +135,7 @@ case $1 in
 		install_snapd
 		install_docker
 		install_docker_compose
+		install_vscode
 		configurate_git;;
 
 	compose)
@@ -139,6 +152,9 @@ case $1 in
 
 	user) 
 		create_unix_user;;
+
+	vscode)
+		install_vscode;;
 
 	*)
 		display_help;;
