@@ -104,6 +104,7 @@ install_docker_compose() {
 
 install_postman() {
 	# https://code.visualstudio.com/docs/setup/linux#_snap
+	echo "Installing postman"
 	check_snapd_install
 	if sudo snap install postman; then
 		echo "postman has been successfully installed"
@@ -131,6 +132,7 @@ install_snapd() {
 
 install_vscode() {
 	# https://code.visualstudio.com/docs/setup/linux#_snap
+	echo "Installing vscode"
 	check_snapd_install
 	if sudo snap install --classic code; then
 		echo "vscode has been successfully installed"
