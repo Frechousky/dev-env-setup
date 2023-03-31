@@ -42,17 +42,14 @@ create_unix_user() {
 }
 
 display_help() {
-	echo "Download, install and configure softwares for software engineering."
+	echo "Install and configure softwares for software engineering."
 	echo "It is advised not to run this script with sudo."
-	echo "Usage: ./set_dev_env.sh [all|compose|docker|git|intellij|maven|npm|user]"
+	echo "Usage: $0 [all|compose|docker|git|snapd|user]"
 	echo -e "\tall\t\tfull installation"
-	echo -e "\tcompose\t\tdownload and install docker-compose"
-	echo -e "\tdocker\t\tdownload, install and configure docker (add user to docker group)"
+	echo -e "\tcompose\t\tinstall docker-compose"
+	echo -e "\tdocker\t\tinstall and configure docker (add user to docker group)"
 	echo -e "\tgit\t\tconfigure git"
-	echo -e "\tintellij\tdownload and install intellij idea community"
-	echo -e "\tmaven\t\tdownload and install maven"
-	echo -e "\tnpm\t\tdownload and install npm"
-	echo -e "\tsnapd\t\tdownload and install snapd"
+	echo -e "\snapd\t\tinstall snapd"
 	echo -e "\tuser\t\tcreate unix user"
 }
 
@@ -103,38 +100,6 @@ install_docker_compose() {
 	fi
 }
 
-install_intellij() {
-	# https://www.jetbrains.com/help/idea/installation-guide.html#snap
-	echo "Installing intellij idea community"
-	check_snapd_install
-	if sudo snap install intellij-idea-community --classic; then
-		echo "intellij idea community has been successfully installed"
-	else
-		echo "Error installing intellij idea community"
-		exit 1
-	fi
-}
-
-install_maven() {
-  echo "Installing maven"
-  if sudo dnf -y install maven; then
-		echo "maven has been successfully installed"
-	else
-		echo "Error installing maven"
-		exit 1
-	fi
-}
-
-install_npm() {
-	echo "Installing npm"
-  	if sudo dnf -y install npm; then
-		echo "npm has been successfully installed"
-	else
-		echo "Error installing npm"
-		exit 1
-	fi
-}
-
 install_snapd() {
 	# https://snapcraft.io/docs/installing-snap-on-fedora
 	echo "Installing snapd"
@@ -158,9 +123,6 @@ case $1 in
 		install_snapd
 		install_docker
 		install_docker_compose
-		install_intellij
-		install_maven
-		install_npm
 		configurate_git;;
 
 	compose)
@@ -171,15 +133,6 @@ case $1 in
 
 	git)
 		configurate_git;;
-	
-	intellij)
-		install_intellij;;
-
-  	maven)
-		install_maven;;
-	
-	maven)
-		install_npm;;
 
 	snapd)
 		install_snapd;;
