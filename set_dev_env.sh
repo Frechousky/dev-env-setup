@@ -48,24 +48,12 @@ display_help() {
 	echo -e "\tall\t\tfull installation"
 	echo -e "\tcompose\t\tdownload and install docker-compose"
 	echo -e "\tdocker\t\tdownload, install and configure docker (add user to docker group)"
-	echo -e "\tdbeaver\t\tdownload and install dbeaver"
 	echo -e "\tgit\t\tconfigure git"
 	echo -e "\tintellij\tdownload and install intellij idea community"
 	echo -e "\tmaven\t\tdownload and install maven"
 	echo -e "\tnpm\t\tdownload and install npm"
 	echo -e "\tsnapd\t\tdownload and install snapd"
 	echo -e "\tuser\t\tcreate unix user"
-}
-
-install_dbeaver() {
-	echo "Installing dbeaver"
-	check_snapd_install
-	if sudo snap install dbeaver-ce; then
-		echo "dbeaver has been successfully installed"
-	else
-		echo "Error installing dbeaver"
-		exit 1
-	fi
 }
 
 install_docker() {
@@ -168,7 +156,6 @@ case $1 in
 	all)
 		create_unix_user
 		install_snapd
-		install_dbeaver
 		install_docker
 		install_docker_compose
 		install_intellij
@@ -181,9 +168,6 @@ case $1 in
 
 	docker)
 		install_docker;;
-
-	dbeaver)
-		install_dbeaver;;
 
 	git)
 		configurate_git;;
