@@ -126,7 +126,7 @@ install_snapd() {
 	if sudo ln -s /var/lib/snapd/snap /snap; then
 		echo "Created symlink from /var/lib/snapd/snap to /snap"
 	else
-		echo "Error creating symlink from /var/lib/snapd/snap to /snapln "
+		echo "Error creating symlink from /var/lib/snapd/snap to /snap "
 	fi
 }
 
